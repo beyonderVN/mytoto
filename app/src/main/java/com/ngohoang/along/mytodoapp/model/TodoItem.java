@@ -6,7 +6,7 @@ package com.ngohoang.along.mytodoapp.model;
 
 public class TodoItem extends BaseItem{
     String taskName;
-
+    int id;
     public TodoItem() {
         setItemViewType();
     }
@@ -14,6 +14,19 @@ public class TodoItem extends BaseItem{
     public TodoItem(String taskName) {
         this();
         this.taskName = taskName;
+    }
+
+    public TodoItem( int id,String taskName) {
+        this.taskName = taskName;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTaskName() {

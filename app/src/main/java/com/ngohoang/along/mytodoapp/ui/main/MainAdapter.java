@@ -1,18 +1,17 @@
 package com.ngohoang.along.mytodoapp.ui.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ngohoang.along.mytodoapp.R;
 import com.ngohoang.along.mytodoapp.model.BaseItem;
 import com.ngohoang.along.mytodoapp.model.TodoItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,8 +24,10 @@ import butterknife.ButterKnife;
 public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BaseItem> items ;
     Context context;
-    public MainAdapter(Context context, List<BaseItem> items) {
+    Activity activity;
+    public MainAdapter(Context context,Activity activity, List<BaseItem> items) {
         this.context = context;
+        this.activity = activity;
         this.items = items;
     }
 
@@ -63,10 +64,13 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected static class TodoHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.task_name)
+
         TextView taskName;
+
         public TodoHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
         }
     }
 
@@ -79,7 +83,23 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return viewHolder;
     }
 
-    protected void bindTodoHolder(TodoItem todoItem, TodoHolder todoHolder){
+    protected void bindTodoHolder(final TodoItem todoItem, final TodoHolder todoHolder){
         todoHolder.taskName.setText(todoItem.getTaskName());
+        todoHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((MainActivity) activity).callEditItem(todoItem);
+
+            }
+        });
+        todoHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((MainActivity) activity).callRemoveItem(todoItem);
+                return false;
+            }
+
+        });
     }
 }
