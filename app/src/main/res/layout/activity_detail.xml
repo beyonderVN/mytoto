@@ -14,7 +14,8 @@
         android:id="@+id/task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="your taskName name"/>
+        android:hint="your taskName name"
+        />
     <Button
         android:id="@+id/add_btn"
         android:layout_width="wrap_content"

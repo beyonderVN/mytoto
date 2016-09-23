@@ -1,15 +1,15 @@
 package com.ngohoang.along.mytodoapp;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
-import com.ngohoang.along.mytodoapp.ui.detail.DetailActivity;
-
 /**
  * Created by Admin on 21/09/2016.
  */
 public class Navigator {
+    public static final String TAG = "Navigator";
+    public static final String TYPE_ADD = "TYPE_ADD";
+    public static final String TYPE_EDIT = "TYPE_EDIT";
+    public static final String TYPE_REMOVE = "TYPE_REMOVE";
+
+
     private static Navigator ourInstance = new Navigator();
 
     public static Navigator getInstance() {
@@ -17,20 +17,6 @@ public class Navigator {
     }
 
     private Navigator() {
-    }
-
-    public void navigateToAddItem(Context context) {
-        if (context != null) {
-            Intent intentToLaunch = DetailActivity.getCallingIntent(context);
-            context.startActivity(intentToLaunch);
-        }
-    }
-
-    public void navigateToAddItem(Activity activity,int requestCode) {
-        if (activity != null) {
-            Intent intentToLaunch = DetailActivity.getCallingIntent(activity);
-            activity.startActivityForResult(intentToLaunch,requestCode);
-        }
     }
 
 }
