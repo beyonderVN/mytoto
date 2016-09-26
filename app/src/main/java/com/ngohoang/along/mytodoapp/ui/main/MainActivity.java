@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    static final int PICK_CONTACT_REQUEST = 1;
+
     static final String TODO_ITEM = "TODO_ITEM";
     static final String CONTROL_VIEW_TYPE = "CONTROL_VIEW_TYPE";
     @BindView(R.id.todo_list)
@@ -91,20 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==PICK_CONTACT_REQUEST){
-            if (resultCode == RESULT_OK) {
-                TodoItem todoItem = (TodoItem) data.getSerializableExtra("result");
-                list.add(todoItem);
 
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mainAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     public void addItem(TodoItem todoItem){
