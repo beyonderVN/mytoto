@@ -22,7 +22,7 @@ public class TodoDataBase extends SQLiteOpenHelper {
 
 
     // Phiên bản
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
 
     // Tên cơ sở dữ liệu.
@@ -32,8 +32,10 @@ public class TodoDataBase extends SQLiteOpenHelper {
     // Tên bảng: Note.
     private static final String TABLE_TODO = "Todo";
 
-    private static final String COLUMN_TODO_ID ="Note_Id";
-    private static final String COLUMN_TODO_TITLE ="Note_Title";
+    private static final String COLUMN_TODO_ID ="Todo_Id";
+    private static final String COLUMN_TODO_TITLE ="Todo_Title";
+    private static final String COLUMN_TODO_DATETIME ="Todo_Datetime";
+    private static final String COLUMN_TODO_PRIORITY ="Todo_Priority";
 
     public TodoDataBase(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,7 +48,9 @@ public class TodoDataBase extends SQLiteOpenHelper {
         Log.i(TAG, "onCreate ... ");
         // Script tạo bảng.
         String script = "CREATE TABLE " + TABLE_TODO + "("
-                + COLUMN_TODO_ID + " INTEGER PRIMARY KEY," + COLUMN_TODO_TITLE + " TEXT"
+                + COLUMN_TODO_ID + " INTEGER PRIMARY KEY," + COLUMN_TODO_TITLE + " TEXT,"
+                + COLUMN_TODO_DATETIME + " LONG, "
+                + COLUMN_TODO_PRIORITY + " INTEGER"
                 + ")";
         // Chạy lệnh tạo bảng.
         db.execSQL(script);
@@ -70,6 +74,10 @@ public class TodoDataBase extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_TODO_TITLE, todoItem.getTaskName());
+        values.put(COLUMN_TODO_DATETIME, todoItem.getDateTime());
+
+        values.put(COLUMN_TODO_PRIORITY, todoItem.getPriority());
+
 
         // Trèn một dòng dữ liệu vào bảng.
         db.insert(TABLE_TODO, null, values);
@@ -95,6 +103,8 @@ public class TodoDataBase extends SQLiteOpenHelper {
                 TodoItem todoItem = new TodoItem();
                 todoItem.setId(Integer.parseInt(cursor.getString(0)));
                 todoItem.setTaskName(cursor.getString(1));
+                todoItem.setDateTime(Long.parseLong(cursor.getString(2)));
+                todoItem.setPriority(Integer.parseInt(cursor.getString(3)));
 
 
                 // Thêm vào danh sách.
@@ -112,8 +122,11 @@ public class TodoDataBase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_TODO_TITLE, todoItem.getTaskName());
 
+        values.put(COLUMN_TODO_TITLE, todoItem.getTaskName());
+        values.put(COLUMN_TODO_DATETIME, todoItem.getDateTime());
+
+        values.put(COLUMN_TODO_PRIORITY, todoItem.getPriority());
         int result;
         String id = String.valueOf(todoItem.getId());
         // updating row

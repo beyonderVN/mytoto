@@ -2,6 +2,7 @@ package com.ngohoang.along.mytodoapp.ui.main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.ngohoang.along.mytodoapp.R;
 import com.ngohoang.along.mytodoapp.model.BaseItem;
 import com.ngohoang.along.mytodoapp.model.TodoItem;
+import com.ngohoang.along.mytodoapp.utils.DateUtil;
 
 import java.util.List;
 
@@ -26,10 +28,12 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BaseItem> items ;
     Context context;
     Activity activity;
+
     public MainAdapter(Context context,Activity activity, List<BaseItem> items) {
         this.context = context;
         this.activity = activity;
         this.items = items;
+
     }
 
     @Override
@@ -74,9 +78,15 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.priority_picker_btn)
         Button priorityPickerBtn;
 
+
+
+
+
         public TodoHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+
 
             datePickerBtn.setClickable(false);
             timePickerBtn.setClickable(false);
@@ -98,8 +108,25 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return viewHolder;
     }
 
+
+    String[] priorityNames ;
+    int[] priorityColors;
     protected void bindTodoHolder(final TodoItem todoItem, final TodoHolder todoHolder){
         todoHolder.taskName.setText(todoItem.getTaskName());
+
+        if(priorityNames==null||priorityColors==null){
+            Resources res = context.getApplicationContext().getResources();
+            priorityNames = res.getStringArray(R.array.priority_name);
+            priorityColors = res.getIntArray(R.array.priority_color);
+        }
+
+        todoHolder.datePickerBtn.setText(DateUtil.stringDateValueFromLong(todoItem.getDateTime()));
+        todoHolder.timePickerBtn.setText(DateUtil.stringTimeValueFromLong(todoItem.getDateTime()));
+        todoHolder.priorityPickerBtn.setText(String.valueOf(priorityNames[todoItem.getPriority()]));
+        todoHolder.priorityPickerBtn.setBackgroundColor(priorityColors[todoItem.getPriority()]);
+
+
+
         todoHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -49,5 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="your taskName name"
+        android:inputType="textNoSuggestions"
         />
     </LinearLayout>

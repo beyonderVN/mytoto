@@ -10,6 +10,8 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.ngohoang.along.mytodoapp.data.TodoDataBase;
 import com.ngohoang.along.mytodoapp.dialog.DialogUtil;
 import com.ngohoang.along.mytodoapp.model.BaseItem;
 import com.ngohoang.along.mytodoapp.model.TodoItem;
+import com.ngohoang.along.mytodoapp.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -252,6 +255,8 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
                         taskName.setText(todoItem.getTaskName());
+                        priority = todoItem.getPriority();
+
                         taskName.setSelection(0, taskName.getText().length());
                     }catch (Exception e){
 
@@ -273,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                     taskName.setLongClickable(false);
                     taskName.setBackground(null);
                     taskName.setCursorVisible(false);
+                    taskName.setFocusable(false);
                     break;
             }
 
@@ -291,12 +297,18 @@ public class MainActivity extends AppCompatActivity {
             priorityPickerBtn.setBackgroundColor( priorityColors[priority]);
 
         }
+
         void onSubmitClick(){
             addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     MainActivity activity = (MainActivity) getActivity();
                     todoItem.setTaskName(taskName.getText().toString());
+                    String dateTime = datePickerBtn.getText().toString()+" "+timePickerBtn.getText().toString();
+
+
+                    todoItem.setDateTime(DateUtil.longValueFromDateTime(dateTime));
+                    todoItem.setPriority(priority);
                     switch (controViewlType){
                         case (Navigator.TYPE_ADD):
                             activity.addItem(todoItem);

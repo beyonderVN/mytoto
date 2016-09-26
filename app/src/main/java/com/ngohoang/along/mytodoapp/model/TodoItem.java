@@ -7,6 +7,25 @@ package com.ngohoang.along.mytodoapp.model;
 public class TodoItem extends BaseItem{
     String taskName;
     int id;
+    long dateTime;
+    int priority;
+
+    public long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(long dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     public TodoItem() {
         setItemViewType();
     }
@@ -46,9 +65,11 @@ public class TodoItem extends BaseItem{
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("***** User Entity Details *****\n");
-        stringBuilder.append("id=" + this.getId() + "\n");
-        stringBuilder.append("taskName" + this.getTaskName() + "\n");
+        stringBuilder.append("***** Todo Entity Details *****\n");
+        stringBuilder.append("id= " + this.getId() + "\n");
+        stringBuilder.append("taskName= " + this.getTaskName() + "\n");
+        stringBuilder.append("dateTime= " + this.getDateTime() + "\n");
+        stringBuilder.append("priority= " + this.getPriority() + "\n");
         stringBuilder.append("*******************************");
 
         return stringBuilder.toString();
