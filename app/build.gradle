@@ -29,6 +29,8 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:$SLV"
     compile "com.android.support:design:$SLV"
+    compile "com.android.support:cardview-v7:$SLV"
+
     compile "com.jakewharton:butterknife:$butterknife"
 
     apt "com.jakewharton:butterknife-compiler:$butterknife"

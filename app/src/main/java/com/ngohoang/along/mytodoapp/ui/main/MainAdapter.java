@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.ngohoang.along.mytodoapp.R;
@@ -66,10 +67,24 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.task_name)
 
         TextView taskName;
+        @BindView(R.id.date_picker_btn)
+        Button datePickerBtn;
+        @BindView(R.id.time_picker_btn)
+        Button timePickerBtn;
+        @BindView(R.id.priority_picker_btn)
+        Button priorityPickerBtn;
 
         public TodoHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            datePickerBtn.setClickable(false);
+            timePickerBtn.setClickable(false);
+            priorityPickerBtn.setClickable(false);
+            taskName.setClickable(false);
+            taskName.setLongClickable(false);
+            taskName.setBackground(null);
+            taskName.setCursorVisible(false);
 
         }
     }
@@ -77,7 +92,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected TodoHolder createTodoHolder(ViewGroup parent) {
         View v = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.layout_todo_item,parent,false);
+                .inflate(R.layout.layout_todo_item_card,parent,false);
         final TodoHolder viewHolder = new TodoHolder(v);
 
         return viewHolder;

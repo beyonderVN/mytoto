@@ -3,4 +3,13 @@
 
     <string name="addBtn">ADD</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="time_format">%1$d:%2$d</string>
+    <string name="date_format">%1$d/%2$d/%3$d</string>
+
+    <string-array
+        name="priority_name">
+        <item>LOW</item>
+        <item>MEDIUM</item>
+        <item>IMPORTANT</item>
+    </string-array>
 </resources>
