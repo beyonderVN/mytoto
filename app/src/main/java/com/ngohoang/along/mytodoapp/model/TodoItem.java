@@ -41,4 +41,16 @@ public class TodoItem extends BaseItem{
     public void setItemViewType() {
         itemViewType = BaseItem.TYPE_TODO_ITEM;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("***** User Entity Details *****\n");
+        stringBuilder.append("id=" + this.getId() + "\n");
+        stringBuilder.append("taskName" + this.getTaskName() + "\n");
+        stringBuilder.append("*******************************");
+
+        return stringBuilder.toString();
+    }
 }

@@ -1,10 +1,11 @@
 package com.ngohoang.along.mytodoapp.ui.main;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,15 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
+import com.ngohoang.along.mytodoapp.ComonInterface;
 import com.ngohoang.along.mytodoapp.Navigator;
 import com.ngohoang.along.mytodoapp.R;
 import com.ngohoang.along.mytodoapp.data.TodoDataBase;
+import com.ngohoang.along.mytodoapp.dialog.DialogUtil;
 import com.ngohoang.along.mytodoapp.model.BaseItem;
 import com.ngohoang.along.mytodoapp.model.TodoItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView todoList;
     @BindView(R.id.add_btn)
     Button addBtn;
-    @BindView(R.id.bottom_sheet)
-    LinearLayout bottomSheetViewgroup;
+
 
 
     Navigator navigator;
@@ -60,17 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        final BottomSheetBehavior bottomSheetBehavior =
-                BottomSheetBehavior.from(bottomSheetViewgroup);
-
-
         addBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
 
-                ModalBottomSheet modalBottomSheet = ModalBottomSheet.newInstance();
-                modalBottomSheet.show(getSupportFragmentManager(), "bottom sheet");
+                callAddItem();
 
             }
         });
@@ -79,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         todoList.setLayoutManager(llm);
         todoList.setAdapter(mainAdapter);
         refresh();
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return super.onCreateDialog(id);
     }
 
     @Override
@@ -120,7 +122,10 @@ public class MainActivity extends AppCompatActivity {
         db.removeTodo(todoItem);
         refresh();
     }
-
+    public void callAddItem(){
+        ModalBottomSheet modalBottomSheet = ModalBottomSheet.newInstance();
+        modalBottomSheet.show(getSupportFragmentManager(), "bottom sheet");
+    }
     public void callEditItem(TodoItem todoItem){
         ModalBottomSheet modalBottomSheet = ModalBottomSheet.newInstance(todoItem,Navigator.TYPE_EDIT);
         modalBottomSheet.show(getSupportFragmentManager(), "bottom sheet");
@@ -138,15 +143,29 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.notifyDataSetChanged();
     }
 
+
+
     public static class ModalBottomSheet
-            extends BottomSheetDialogFragment {
+            extends BottomSheetDialogFragment implements ComonInterface {
+        public static final int DATE_PICKER_DIALOG = 1;
+        public static final int TIME_PICKER_DIALOG = 2;
         @BindView(R.id.task_name)
         EditText taskName;
         @BindView(R.id.add_btn)
         Button addBtn;
+        @BindView(R.id.date_picker_btn)
+        Button datePickerBtn;
+        @BindView(R.id.time_picker_btn)
+        Button timePickerBtn;
+        @BindView(R.id.priority_picker_btn)
+        Button priorityPickerBtn;
+
+        int priority = 0;
+        String[] priorityNames ;
+        int[] priorityColors;
 
         String controViewlType = Navigator.TYPE_ADD;
-
+        TodoItem todoItem ;
 
         static ModalBottomSheet newInstance() {
             ModalBottomSheet f = new ModalBottomSheet();
@@ -170,9 +189,67 @@ public class MainActivity extends AppCompatActivity {
         ) {
 
             View v = inflater.inflate(
-                    R.layout.activity_main_bottom_sheets, container, false);
+                    R.layout.layout_todo_item_bottom_sheet, container, false);
             ButterKnife.bind(this, v);
 
+            Resources res = getResources();
+            priorityNames = res.getStringArray(R.array.priority_name);
+            priorityColors = res.getIntArray(R.array.priority_color);
+
+
+            setupDailog();
+            onSubmitClick();
+            if (controViewlType!=Navigator.TYPE_REMOVE){
+                onTimePickerBtnClick();
+                onDatePickerBtnClick();
+                onPriorityPickerBtnClick();
+            }
+
+            return v;
+        }
+
+
+        private void onTimePickerBtnClick() {
+            timePickerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        DialogUtil.TimePickerFragment newFragment = new DialogUtil.TimePickerFragment();
+                        newFragment.setTargetFragment(ModalBottomSheet.this,TIME_PICKER_DIALOG);
+                        newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+
+
+                }
+            });
+        }
+        private void onDatePickerBtnClick() {
+            datePickerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        DialogUtil.DatePickerFragment newFragment = new DialogUtil.DatePickerFragment();
+                        newFragment.setTargetFragment(ModalBottomSheet.this, DATE_PICKER_DIALOG);
+                        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+
+                }
+            });
+        }
+
+
+        private void onPriorityPickerBtnClick() {
+            priorityPickerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        priority = (priority + 1) % priorityNames.length;
+                        priorityPickerBtn.setText(String.valueOf(priorityNames[priority]));
+                        priorityPickerBtn.setBackgroundColor(priorityColors[priority]);
+
+                }
+            });
+        }
+
+        void setupDailog(){
             Bundle bundle = getArguments();
             if(bundle!=null){
                 controViewlType = bundle.getString(CONTROL_VIEW_TYPE);
@@ -181,46 +258,93 @@ public class MainActivity extends AppCompatActivity {
 
             switch (controViewlType){
                 case (Navigator.TYPE_ADD):
+                    todoItem = new TodoItem();
+                    addBtn.setText("ADD");
                     break;
                 case (Navigator.TYPE_EDIT):
                     try {
-                        TodoItem todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
+                        todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
+                        taskName.setText(todoItem.getTaskName());
+                        taskName.setSelection(0, taskName.getText().length());
+                    }catch (Exception e){
+
+                    }
+                    addBtn.setText("EDIT");
+                    break;
+                case (Navigator.TYPE_REMOVE):
+                    try {
+                        todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
                         taskName.setText(todoItem.getTaskName());
                     }catch (Exception e){
 
                     }
-                    break;
-                case (Navigator.TYPE_REMOVE):
-                    taskName.setEnabled(false);
-                    taskName.setFocusable(false);
+                    addBtn.setText("REMOVE");
+                    datePickerBtn.setClickable(false);
+                    timePickerBtn.setClickable(false);
+                    priorityPickerBtn.setClickable(false);
+                    taskName.setClickable(false);
+                    taskName.setLongClickable(false);
+                    taskName.setBackground(null);
+                    taskName.setCursorVisible(false);
                     break;
             }
 
-                taskName.setSelection(0, taskName.getText().length());
 
 
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            timePickerBtn.setText(String.format(getResources().getString(R.string.time_format), hour, minute));
+            datePickerBtn.setText(String.format(getResources().getString(R.string.date_format), day,month, year));
+            priorityPickerBtn.setTextColor(getResources().getColor(R.color.white));
+            priorityPickerBtn.setText( String.valueOf(priorityNames[priority]));
+            priorityPickerBtn.setBackgroundColor( priorityColors[priority]);
+
+        }
+        void onSubmitClick(){
             addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     MainActivity activity = (MainActivity) getActivity();
-
+                    todoItem.setTaskName(taskName.getText().toString());
                     switch (controViewlType){
                         case (Navigator.TYPE_ADD):
-                            activity.addItem(new TodoItem(taskName.getText().toString()));
-                            dismiss();
+                            activity.addItem(todoItem);
+                            break;
                         case (Navigator.TYPE_EDIT):
-                            activity.editItem(new TodoItem(taskName.getText().toString()));
-                            dismiss();
+                            activity.editItem(todoItem);
+                            break;
                         case (Navigator.TYPE_REMOVE):
-                            activity.removeItem(new TodoItem(taskName.getText().toString()));
-                            dismiss();
+                            activity.removeItem(todoItem);
+                            break;
                     }
+                    dismiss();
 
                 }
             });
-            return v;
         }
 
+
+        @Override
+        public void doWork(Object ...obj) {
+            switch ((Integer)obj[0]){
+                case DATE_PICKER_DIALOG :
+                    int year = (Integer)obj[1];
+                    int month = (Integer)obj[2];
+                    int day = (Integer)obj[3];
+                    datePickerBtn.setText(String.format(getResources().getString(R.string.date_format), day,month, year));
+                    break;
+                case TIME_PICKER_DIALOG :
+                    int hourOfDay = (Integer)obj[1];
+                    int minute = (Integer)obj[2];
+                    timePickerBtn.setText(String.format(getResources().getString(R.string.time_format), hourOfDay, minute));
+                    break;
+            }
+
+        }
     }
 
 }

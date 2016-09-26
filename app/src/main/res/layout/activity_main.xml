@@ -14,12 +14,15 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@color/light_gray"
     >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/todo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="50dp"
             >
 
         </android.support.v7.widget.RecyclerView>
@@ -33,5 +36,5 @@
     </FrameLayout>
 
     <!-- Bottom Sheet -->
-    <include layout="@layout/activity_main_bottom_sheets" />
+    <include layout="@layout/layout_todo_item_bottom_sheet" />
 </android.support.design.widget.CoordinatorLayout>

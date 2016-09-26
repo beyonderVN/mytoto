@@ -64,7 +64,7 @@ public class TodoDataBase extends SQLiteOpenHelper {
     }
 
     public void addTodo(TodoItem todoItem) {
-        Log.i(TAG, "addTodo ... " + todoItem.getTaskName());
+        Log.i(TAG, "addTodo ... " + todoItem.toString());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -82,7 +82,7 @@ public class TodoDataBase extends SQLiteOpenHelper {
     public List<TodoItem> getAllTodos() {
         Log.i(TAG, "MyDatabaseHelper.getAllNotes ... " );
 
-        List<TodoItem> noteList = new ArrayList<TodoItem>();
+        List<TodoItem> todoItems = new ArrayList<TodoItem>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_TODO;
 
@@ -98,30 +98,33 @@ public class TodoDataBase extends SQLiteOpenHelper {
 
 
                 // Thêm vào danh sách.
-                noteList.add(todoItem);
+                todoItems.add(todoItem);
             } while (cursor.moveToNext());
         }
 
         // return note list
-        return noteList;
+        return todoItems;
     }
 
     public int editTodo(TodoItem todoItem) {
-        Log.i(TAG, "editTodo ... "  + todoItem.getTaskName());
+        Log.i(TAG, "editTodo ... "  + todoItem.toString());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_TODO_TITLE, todoItem.getTaskName());
 
-
+        int result;
+        String id = String.valueOf(todoItem.getId());
         // updating row
-        return db.update(TABLE_TODO, values, COLUMN_TODO_ID + " = ?",
-                new String[]{String.valueOf(todoItem.getId())});
+        result=db.update(TABLE_TODO, values, COLUMN_TODO_ID + " = ?",
+                new String[]{id});
+        db.close();
+        return result;
     }
 
     public void removeTodo(TodoItem todoItem) {
-        Log.i(TAG, "removeTodo ... " + todoItem.getTaskName() );
+        Log.i(TAG, "removeTodo ... " + todoItem.toString() );
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TODO, COLUMN_TODO_ID + " = ?",
