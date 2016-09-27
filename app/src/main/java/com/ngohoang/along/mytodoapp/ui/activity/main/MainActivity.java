@@ -1,4 +1,4 @@
-package com.ngohoang.along.mytodoapp.ui.main;
+package com.ngohoang.along.mytodoapp.ui.activity.main;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,8 +10,6 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,7 @@ import com.ngohoang.along.mytodoapp.ComonInterface;
 import com.ngohoang.along.mytodoapp.Navigator;
 import com.ngohoang.along.mytodoapp.R;
 import com.ngohoang.along.mytodoapp.data.TodoDataBase;
-import com.ngohoang.along.mytodoapp.dialog.DialogUtil;
+import com.ngohoang.along.mytodoapp.ui.dialog.DialogUtil;
 import com.ngohoang.along.mytodoapp.model.BaseItem;
 import com.ngohoang.along.mytodoapp.model.TodoItem;
 import com.ngohoang.along.mytodoapp.utils.DateUtil;
@@ -250,12 +248,25 @@ public class MainActivity extends AppCompatActivity {
                 case (Navigator.TYPE_ADD):
                     todoItem = new TodoItem();
                     addBtn.setText("ADD");
+                    final Calendar c = Calendar.getInstance();
+                    int year = c.get(Calendar.YEAR);
+                    int month = c.get(Calendar.MONTH);
+                    int day = c.get(Calendar.DAY_OF_MONTH);
+                    int hour = c.get(Calendar.HOUR_OF_DAY);
+                    int minute = c.get(Calendar.MINUTE);
+                    timePickerBtn.setText(String.format(getResources().getString(R.string.time_format), hour, minute));
+                    datePickerBtn.setText(String.format(getResources().getString(R.string.date_format), day,month, year));
+                    priorityPickerBtn.setTextColor(getResources().getColor(R.color.white));
+                    priorityPickerBtn.setText( String.valueOf(priorityNames[priority]));
+                    priorityPickerBtn.setBackgroundColor( priorityColors[priority]);
                     break;
                 case (Navigator.TYPE_EDIT):
                     try {
                         todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
                         taskName.setText(todoItem.getTaskName());
                         priority = todoItem.getPriority();
+                        datePickerBtn.setText(DateUtil.stringDateValueFromLong(todoItem.getDateTime()));
+                        timePickerBtn.setText(DateUtil.stringTimeValueFromLong(todoItem.getDateTime()));
 
                         taskName.setSelection(0, taskName.getText().length());
                     }catch (Exception e){
@@ -267,6 +278,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         todoItem = (TodoItem) getArguments().getSerializable(TODO_ITEM);
                         taskName.setText(todoItem.getTaskName());
+                        priority = todoItem.getPriority();
+                        datePickerBtn.setText(DateUtil.stringDateValueFromLong(todoItem.getDateTime()));
+                        timePickerBtn.setText(DateUtil.stringTimeValueFromLong(todoItem.getDateTime()));
                     }catch (Exception e){
 
                     }
@@ -284,17 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-            timePickerBtn.setText(String.format(getResources().getString(R.string.time_format), hour, minute));
-            datePickerBtn.setText(String.format(getResources().getString(R.string.date_format), day,month, year));
-            priorityPickerBtn.setTextColor(getResources().getColor(R.color.white));
-            priorityPickerBtn.setText( String.valueOf(priorityNames[priority]));
-            priorityPickerBtn.setBackgroundColor( priorityColors[priority]);
+
 
         }
 

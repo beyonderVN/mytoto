@@ -1,4 +1,4 @@
-package com.ngohoang.along.mytodoapp.ui.main;
+package com.ngohoang.along.mytodoapp.ui.activity.main;
 
 import android.app.Activity;
 import android.content.Context;

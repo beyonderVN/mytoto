@@ -1,4 +1,4 @@
-package com.ngohoang.along.mytodoapp.dialog;
+package com.ngohoang.along.mytodoapp.ui.dialog;
 
 
 import android.app.DatePickerDialog;
